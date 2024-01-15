@@ -3,20 +3,9 @@ from dotenv import load_dotenv
 
 from langchain_community.vectorstores import Qdrant
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from qdrant_client import QdrantClient
 
 load_dotenv()
-
-loader = PyPDFLoader("data.pdf")
-documents = loader.load()
-
-text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size = 500,
-    chunk_overlap = 50
-)
-
-texts = text_splitter.split_documents(documents)
 
 # load the embedding model
 model_name = "BAAI/bge-large-en"
@@ -29,18 +18,23 @@ embeddings = HuggingFaceBgeEmbeddings(
     encode_kwargs = encode_kwargs
 )
 
-print("Embeddings Model Loaded...")
-
 qdrant_url = os.environ.get("QDRANT_DB_ENDPOINT_URL")
 collection_name = os.environ.get("COLLECTION_NAME")
 
-qdrant = Qdrant.from_documents(
-    texts,
-    embeddings,
-    url=qdrant_url,
-    prefer_grpc=False,
-    collection_name=collection_name,
+client = QdrantClient(
+    url = qdrant_url,
+    prefer_grpc= False,
 )
 
-print("Qdrant Index Created...")
+db = Qdrant(
+    client = client,
+    embeddings = embeddings,
+    collection_name =collection_name
+)
 
+query = "What are some of the limitations of GPT-4?"
+
+docs = db.similarity_search_with_score(query=query, k=5)
+for data in docs:
+    doc, score = data
+    print("score:" , score, "\ncontent:" , doc.page_content, "\nmetadata:" , doc.metadata, "\n")

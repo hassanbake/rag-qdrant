@@ -10,4 +10,4 @@ docker run --name qdrant --restart unless-stopped -p 6333:6333 -v D:\Python\rag-
 
 *1. How well the GPT4 performed on the professional and academic exams?*
 
-*2 .What are some of the limitations of GPT-4?*
+*2. What are some of the limitations of GPT-4?*
