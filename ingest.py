@@ -35,11 +35,11 @@ qdrant_url = os.environ.get("QDRANT_DB_ENDPOINT_URL")
 collection_name = "gpt_collection"
 
 qdrant = Qdrant.from_documents(
-    texts = texts,
-    embeddings = embeddings,
-    url = qdrant_url,
-    prefer_grpd = False,
-    collection_name = collection_name
+    texts,
+    embeddings,
+    url=qdrant_url,
+    prefer_grpc=False,
+    collection_name=collection_name,
 )
 
 print("Qdrant Index Created...")
