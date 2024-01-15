@@ -1,7 +1,12 @@
+import os
+from dotenv import load_dotenv
+
 from langchain_community.vectorstores import Qdrant
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+load_dotenv()
 
 loader = PyPDFLoader("data.pdf")
 documents = loader.load()
@@ -25,3 +30,17 @@ embeddings = HuggingFaceBgeEmbeddings(
 )
 
 print("Embeddings Model Loaded...")
+
+qdrant_url = os.environ.get("QDRANT_DB_ENDPOINT_URL")
+collection_name = "gpt_collection"
+
+qdrant = Qdrant.from_documents(
+    texts = texts,
+    embeddings = embeddings,
+    url = qdrant_url,
+    prefer_grpd = False,
+    collection_name = collection_name
+)
+
+print("Qdrant Index Created...")
+

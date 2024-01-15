@@ -4,3 +4,4 @@ sentence_transformers
 torch
 pypdf
 qdrant-client
+python-dotenv
